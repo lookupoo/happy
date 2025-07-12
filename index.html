@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>معبد خودتحلیلی شادی</title>
+  <style>
+    body {
+      direction: rtl;
+      font-family: Tahoma, sans-serif;
+      background-color: #fffbe6;
+      color: #222;
+      max-width: 600px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d4a400;
+      margin-bottom: 30px;
+    }
+
+    #question {
+      font-size: 20px;
+      margin-bottom: 30px;
+      min-height: 70px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 20px;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background-color: #f6c90e;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e0b700;
+    }
+
+    #result {
+      background-color: #fff4cc;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 12px;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    #continueBtn {
+      display: none;
+    }
+
+    #final {
+      background-color: #e9ffe6;
+      color: #007f00;
+      padding: 20px;
+      margin-top: 30px;
+      border: 2px dashed #a5d6a7;
+      border-radius: 12px;
+      font-size: 18px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>💛 معبد خودتحلیلی شادی</h2>
+  <div id="question"></div>
+
+  <button id="yesBtn">بله</button>
+  <button id="noBtn">خیر</button>
+  <button id="continueBtn">ادامه</button>
+
+  <div id="result"></div>
+  <div id="final"></div>
+
+  <script>
+    const steps = [
+      {
+        text: "❓ آیا بدنم حس سبکی، گرما یا حرکت داره؟",
+        yes: 1,
+        no: {
+          message: "🧩 راهکار:\n▪ یک لیوان آب بخور\n▪ دست‌هات رو بمال یا بازوهات رو بغل کن\n▪ پنج دقیقه راه برو یا کشش سبک انجام بده\n▪ اگه خسته‌ای: کمی دراز بکش و فقط ۳ بار عمیق نفس بکش",
+          next: 0
+        }
+      },
+      {
+        text: "❓ آیا با کسی در تعامل عاطفی یا معنایی بوده‌ام؟",
+        yes: 2,
+        no: {
+          message: "🧩 راهکار:\n▪ به کسی پیام صوتی بده و از حال خودت بگو\n▪ اگه کسی نیست: یک یادداشت بنویس انگار با یک دوست صمیمی حرف می‌زنی\n▪ یا فقط صدای خودتو ضبط کن و حرف دلتو بزن",
+          next: 1
+        }
+      },
+      {
+        text: "❓ آیا الان حس رهایی، معنا یا پیوند دارم؟",
+        yes: "done",
+        no: {
+          message: "🧩 راهکار:\n▪ به یه چیز کوچیک و ساده که برات معنا داره نگاه کن (مثلاً عکس بچگی، آسمون، یه جمله)\n▪ یه هدف خیلی کوچیک تعریف کن برای ۵ دقیقه‌ی بعد (مثلاً مرتب کردن میزت)\n▪ یا یه موسیقی یا تصویر الهام‌بخش پخش کن",
+          next: 2
+        }
+      }
+    ];
+
+    const finalMessage = `✅ 🎉 تو الان شادی اصیل رو داری، حتی اگه کوچیک باشه :)
+
+→ ثبتش کن (با نوشتن، نقاشی، عکس گرفتن، نفس عمیق)
+→ می‌تونی اینو با یکی شریک بشی، یا فقط توی دل خودت نگه داریش و لبخند بزنی :)`;
+
+    let currentStep = 0;
+    let nextStep = null;
+
+    const questionEl = document.getElementById("question");
+    const resultEl = document.getElementById("result");
+    const finalEl = document.getElementById("final");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const continueBtn = document.getElementById("continueBtn");
+
+    function showQuestion(stepIndex) {
+      const step = steps[stepIndex];
+      questionEl.textContent = step.text;
+      resultEl.style.display = "none";
+      continueBtn.style.display = "none";
+      yesBtn.style.display = "inline-block";
+      noBtn.style.display = "inline-block";
+      finalEl.style.display = "none";
+    }
+
+    yesBtn.onclick = () => {
+      const step = steps[currentStep];
+      if (step.yes === "done") {
+        yesBtn.style.display = "none";
+        noBtn.style.display = "none";
+        questionEl.style.display = "none";
+        finalEl.textContent = finalMessage;
+        finalEl.style.display = "block";
+      } else {
+        currentStep = step.yes;
+        showQuestion(currentStep);
+      }
+    };
+
+    noBtn.onclick = () => {
+      const step = steps[currentStep];
+      resultEl.textContent = step.no.message;
+      resultEl.style.display = "block";
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+      continueBtn.style.display = "inline-block";
+      nextStep = step.no.next;
+    };
+
+    continueBtn.onclick = () => {
+      currentStep = nextStep;
+      nextStep = null;
+      showQuestion(currentStep);
+    };
+
+    showQuestion(currentStep);
+  </script>
+
+</body>
+</html>
